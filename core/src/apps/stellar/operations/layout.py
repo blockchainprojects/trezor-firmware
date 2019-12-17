@@ -21,9 +21,7 @@ from apps.stellar import consts, helpers
 from apps.stellar.layout import format_amount, require_confirm, split, trim_to_rows, ui
 
 if False:
-    from typing import Union
-
-    StellarManageOfferUnion = Union[StellarManageOfferOp, StellarManageBuyOfferOp]
+    from apps.stellar.operations.serialize import StellarManageOfferUnion
 
 
 async def confirm_source_account(ctx, source_account: bytes):
