@@ -194,3 +194,7 @@ if not utils.BITCOIN_ONLY:
     WebAuthnCredentials = 801  # type: Literal[801]
     WebAuthnAddResidentCredential = 802  # type: Literal[802]
     WebAuthnRemoveResidentCredential = 803  # type: Literal[803]
+    BitSharesGetPublicKey = 900  # type: Literal[900]
+    BitSharesPublicKey = 901  # type: Literal[901]
+    BitSharesSignTx = 902  # type: Literal[902]
+    BitSharesSignedTx = 903  # type: Literal[903]
