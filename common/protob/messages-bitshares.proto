@@ -1,0 +1,154 @@
+syntax = "proto2";
+package hw.trezor.messages.bitshares;
+
+// Sugar for easier handling in Java
+option java_package = "com.satoshilabs.trezor.lib.protobuf";
+option java_outer_classname = "TrezorMessageBitShares";
+
+/**
+ * Request: Ask device for BitShares public key corresponding to  ? TODO address_n path
+ * @start
+ * @next BitsharesPublicKey
+ * @next Failure
+ */
+message BitSharesGetPublicKey {
+    repeated uint32 address_n  = 1;  // TODO BIP-32 path to derive the key from master node 44'/194'/0'
+    optional bool show_display = 2;  // optionally show on display before sending the result
+}
+
+/**
+ * Response: Contains a BitShares public key derived from device private seed
+ * @end
+ */
+message BitSharesPublicKey {
+    optional string compressed = 1; // BTS public key in Base58 encoding
+    optional bytes raw = 2;
+}
+
+message BitSharesSignTx {
+    repeated uint32 address_n = 1;
+    optional string chain_id = 2;
+    optional BitSharesTx tx = 3;
+
+    message BitSharesTx {
+        optional BitSharesTxHeader header = 1;
+        repeated BitSharesOperation operations = 2;
+        optional uint32 extensions = 3;
+    }
+
+    message BitSharesTxHeader {
+        optional uint32 ref_block_num = 1;
+        optional uint32 ref_block_prefix = 2;
+        optional uint32 expiration = 3;
+    }
+
+    message BitSharesOperation {
+        optional string operation_name = 1;
+        optional BitSharesAsset fee = 2;
+        oneof payload {
+            BitSharesTransferOperation transfer = 3;
+            BitSharesLimitOrderCreateOperation limit_order_create = 4;
+            BitSharesLimitOrderCancelOperation limit_order_cancel = 5;
+            BitSharesAccountCreateOperation account_create = 6;
+            BitSharesAccountUpdateOperation account_update = 7;
+        }
+
+        message BitSharesTransferOperation {
+            optional string sender = 1;
+            optional string receiver = 2;
+            optional BitSharesAsset amount = 3;
+            optional BitSharesMemo memo = 4;
+            optional uint32 extensions = 5;
+        }
+
+        message BitSharesLimitOrderCreateOperation {
+            optional string seller = 1;
+            optional BitSharesAsset amount_to_sell = 2;
+            optional BitSharesAsset min_to_receive = 3;
+            optional uint32 expiration = 4;
+            optional bool fill_or_kill = 5;
+            optional uint32 extensions = 6;
+        }
+
+        message BitSharesLimitOrderCancelOperation {
+            optional string fee_paying_account = 1;
+            optional string order = 2;
+            optional uint32 extensions = 3;
+        }
+
+        message BitSharesAccountCreateOperation {
+            optional string registrar = 1;
+            optional string referrer = 2;
+            optional uint32 referrer_percent = 3;
+            optional string name = 4;
+            optional BitSharesPermission owner = 5;
+            optional BitSharesPermission active = 6;
+            optional BitSharesAccountOptions options = 7;
+            optional string prefix = 8;
+            optional uint32 extensions = 9;
+        }
+
+        message BitSharesAccountUpdateOperation {
+            optional string account = 1;
+            optional BitSharesPermission owner = 2;
+            optional BitSharesPermission active = 3;
+            optional BitSharesAccountOptions new_options = 4;
+            optional string prefix = 5;
+            optional uint32 extensions = 6;
+        }
+
+        message BitSharesAccountOptions {
+            optional BitSharesPublicKey memo_key = 1;
+            optional string voting_account = 2;
+            optional uint32 num_witness = 3;
+            optional uint32 num_committee = 4;
+            repeated string votes = 5;
+            optional uint32 extensions = 6;
+        }
+
+        message BitSharesMemo {
+            optional BitSharesPublicKey sender = 1;
+            optional BitSharesPublicKey receiver = 2;
+            optional uint64 nonce = 3;
+            optional string message = 4;
+            optional string prefix = 5;
+        }
+
+        message BitSharesAsset {
+            optional uint64 amount = 1;
+            optional string asset_id = 2;
+        }
+
+        message BitSharesPermission {
+            optional uint32 weight_threshold = 1;
+            repeated BitSharesAccountAuthority account_auths = 2;
+            repeated BitSharesKeyAuthority key_auths = 3;
+            repeated BitSharesAddressAuthority address_auths = 4;
+        }
+
+        message BitSharesAccountAuthority {
+            optional string account = 1;
+            optional uint32 weight = 2;
+        }
+
+        message BitSharesKeyAuthority {
+            optional BitSharesPublicKey key = 1;
+            optional uint32 weight = 2;
+        }
+
+        message BitSharesAddressAuthority {
+            optional string address = 1; // TODO
+            optional uint32 weight = 2;
+        }
+    }
+}
+
+
+/**
+ * Response: Device returns the signature.
+ * The signature_* fields contain the computed transaction signature. All three fields will be present.
+ * @end
+ */
+message BitSharesSignedTx {
+    optional string signature = 1; // Computed signature
+}

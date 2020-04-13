@@ -250,4 +250,10 @@ enum MessageType {
     MessageType_WebAuthnCredentials = 801 [(wire_out) = true];
     MessageType_WebAuthnAddResidentCredential = 802 [(wire_in) = true];
     MessageType_WebAuthnRemoveResidentCredential = 803 [(wire_in) = true];
+
+    // BitShares
+    MessageType_BitSharesGetPublicKey = 900 [(wire_in) = true];
+    MessageType_BitSharesPublicKey = 901 [(wire_out) = true];
+    MessageType_BitSharesSignTx = 902 [(wire_in) = true];
+    MessageType_BitSharesSignedTx = 903 [(wire_out) = true];
 }
