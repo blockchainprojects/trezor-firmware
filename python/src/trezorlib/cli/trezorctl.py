@@ -27,6 +27,7 @@ from ..client import TrezorClient
 from ..transport import enumerate_devices, get_transport
 from . import (
     binance,
+    bitshares,
     btc,
     cardano,
     cosi,
@@ -69,6 +70,7 @@ COMMAND_ALIASES = {
     "xrp": ripple.cli,
     "xlm": stellar.cli,
     "xtz": tezos.cli,
+    "bts": bitshares.cli,
 }
 
 
@@ -256,6 +258,7 @@ def usb_reset():
 
 cli.add_command(binance.cli)
 cli.add_command(btc.cli)
+cli.add_command(bitshares.cli)
 cli.add_command(cardano.cli)
 cli.add_command(cosi.cli)
 cli.add_command(crypto.cli)
@@ -273,11 +276,12 @@ cli.add_command(tezos.cli)
 
 cli.add_command(firmware.firmware_update)
 
-
 #
 # Main
 #
 
 
 if __name__ == "__main__":
+    print("TREZORCTL DEV")
     cli()  # pylint: disable=E1120
+    print("TREZORCTL DEV")
